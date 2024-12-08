@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Make sure fonts are applied properly inside Quill editor */
+.ql-editor {
+    font-family: 'Arial', sans-serif; /* Default font family for Quill editor */
+    font-size: 1rem; /* Ensure font size is applied */
+  }
+  
+  /* Apply different fonts with more specific font classes */
+  .ql-font-arial {
+    font-family: 'Arial', sans-serif !important; /* Apply Arial */
+  }
+  
+  .ql-font-verdana {
+    font-family: 'Verdana', sans-serif !important; /* Apply Verdana */
+  }
+  
+  .ql-font-times {
+    font-family: 'Times New Roman', serif !important; /* Apply Times New Roman */
+  }
+  
+  /* Add specific styling for strong (bold) elements */
+  strong {
+    font-weight: bold;
+  }
+  
+  /* Heading styling */
+  h1, h2 {
+    font-weight: bold;
+    margin: 0.5rem 0; /* Add spacing between headings */
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  /* List and content styling */
+  ol {
+    padding-left: 20px;
+    margin-left: 2rem;
+    list-style-type: decimal;
+
+  }
+  
+  li{
+    padding-left: 5px;
+  }
+   ul li {
+    padding-left: 5px;
+    margin-left: 2rem;
+    list-style-type: disc; /* Bullet points for list */
+  }
+  
+  /* Apply alignment classes */
+  .ql-align-left {
+    text-align: left !important;
+  }
+  
+  .ql-align-center {
+    text-align: center !important;
+  }
+  
+  .ql-align-right {
+    text-align: right !important;
+  }
+  
