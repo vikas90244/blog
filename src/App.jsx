@@ -1,5 +1,5 @@
 import React from 'react';
-import Blogs from './components/blogs';
+import Blogs from './components/Blogs'
 const App = () => {
   return (
    <div>
