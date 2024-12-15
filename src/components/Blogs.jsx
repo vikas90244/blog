@@ -104,7 +104,7 @@ const Blogs = () => {
               <input
                 type="text"
                 style={{ backgroundColor: updatedTitleColor }}
-                className="border p-2 focus:outline-none mx-4 font-medium px-2 py-2 rounded-t-md"
+                className="border p-2 focus:outline-none mx-8 font-medium px-2 py-2 rounded-t-md"
                 value={updatedTitle}
                 onChange={(e) => setUpdatedTitle(e.target.value)}
               />
@@ -119,7 +119,7 @@ const Blogs = () => {
 
               <ReactQuill 
               modules={modules}
-              className="py-4 px-2 mx-4 min-h-56 rounded-b-md"
+              className="py-4 px-2 mx-8 min-h-56 rounded-b-md"
               theme="snow" 
               value={updatedBody}
               style={{ backgroundColor: lightenColor(updatedTitleColor, 0.15) }}
@@ -146,14 +146,14 @@ const Blogs = () => {
             <div>
               <h3
                 style={{ backgroundColor: blog.title_color, borderColor: blog.title_color }}
-                className="font-medium mx-4 px-2 py-2 border-x border-t bor rounded-t-md"
+                className="font-medium mx-8 px-2 py-2 border-x border-t bor rounded-t-md"
               >
                 {blog.title}
               </h3>
               <div>
                 <div
                   style={{ backgroundColor: lightenColor(blog.title_color, 0.15) }}
-                  className="py-4 mx-4 px-2 min-h-56 border-x border-b border-slate-300 rounded-b-md"
+                  className="py-4 mx-8 px-2 min-h-56 border-x border-b border-slate-300 rounded-b-md"
                   dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.body) }}
                 />
               </div>
