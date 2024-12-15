@@ -173,7 +173,7 @@ const Blogs = () => {
                   <span className="text-sm text-gray-600 mr-4">
                     Created by: {blog.creator.name}
                   </span>
-                  {user && user.email === blog.creator.email && (
+                  {user && (user.email === blog.creator.email || user.id === blog.creator.id) && (
                     <div className="flex space-x-2">
                       <button
                         className="px-2 py-1 rounded-md text-blue-600 hover:bg-blue-100"
