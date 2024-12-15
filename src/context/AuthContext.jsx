@@ -15,6 +15,7 @@ const AuthProvider = ({ children }) => {
       formData.append('username', email);
       formData.append('password', password);
 
+      // Get token
       const response = await API.post("/login", formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -22,7 +23,15 @@ const AuthProvider = ({ children }) => {
       });
 
       const token = response.data.access_token;
-      const userData = { email };
+      
+      // Get user data from /current-user endpoint
+      const userResponse = await API.get("/current-user", {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const userData = userResponse.data;
       setUser(userData);
       setToken(token);
       localStorage.setItem("token", token);
