@@ -70,3 +70,21 @@
     text-align: right !important;
   }
   
+
+  /* Targeting the ReactQuill editor and toolbar */
+.ql-container {
+  border: none !important; /* Remove border */
+}
+
+/* Target the Quill editor container */
+.ql-toolbar {
+  margin: 0 !important; /* Remove margin */
+  padding: 1 !important; /* Remove padding */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+

@@ -1,48 +1,104 @@
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { lightenColor, modules } from '../utility/color';
-import { BlogContext } from '../context/BlogContext';
-import { Editor, EditorState } from 'draft-js';
-import 'draft-js/dist/Draft.css'; // Import Draft.js CSS
-
+import { lightenColor } from '../utility/color';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { modules } from '../utility/color';
 const Blogs = () => {
-  const {
-    fetchBlogs,
-    deleteBlog,
-    updateBlog,
-    startEditing,
-    cancelEditing,
-    blogs,
-    setBlogs,
-    setEditing,
-    editing,
-    updatedTitle,
-    updatedBody,
-    setUpdatedBody,
-    setUpdatedTitle,
-    updatedTitleColor,
-    setUpdatedTitleColor,
-  } = useContext(BlogContext);
+  const URL = "https://blogify-zv8t.onrender.com/blog";
+  const [blogs, setBlogs] = useState([]);
+  const [editing, setEditing] = useState(null);
+  const [updatedTitle, setUpdatedTitle] = useState('');
+  const [updatedBody, setUpdatedBody] = useState('');
+  const [updatedTitleColor, setUpdatedTitleColor] = useState('#ffffff');
 
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const fetchBlogs = async () => {
+    try {
+      const response = await fetch(URL);
+      const data = await response.json();
+      setBlogs(data);
+    } catch (error) {
+      console.error("Error fetching blogs: ", error);
+    }
+  };
 
-  const handleEditorStateChange = (newState) => {
-    setEditorState(newState);
+  const deleteBlog = async (id) => {
+    try {
+      const response = await fetch(`${URL}/${id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== id));
+      }
+    } catch (error) {
+      console.error("Error deleting the blog: ", error);
+    }
+  };
+
+
+
+
+  const updateBlog = async (id) => {
+    try {
+      const response = await fetch(`${URL}/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: updatedTitle,
+          body: updatedBody,
+          title_color: updatedTitleColor,
+        }),
+      });
+
+      if (response.ok) {
+        setBlogs((prevBlogs) =>
+          prevBlogs.map((blog) =>
+            blog.id === id
+              ? { ...blog, title: updatedTitle, body: updatedBody, title_color: updatedTitleColor }
+              : blog
+          )
+        );
+        setEditing(null);
+      } else {
+        console.error("Failed to update blog.");
+      }
+    } catch (error) {
+      console.error("Error updating blog: ", error);
+    }
+  };
+
+  const startEditing = (blog) => {
+    setEditing(blog.id);
+    setUpdatedTitle(blog.title);
+    setUpdatedBody(blog.body);
+    setUpdatedTitleColor(blog.title_color || '#ffffff');
+  };
+
+  const cancelEditing = () => {
+    setEditing(null);
+    setUpdatedTitle('');
+    setUpdatedBody('');
   };
 
   useEffect(() => {
-    const getBlogs = async () => {
-      await fetchBlogs();
-    };
-    getBlogs();
+    fetchBlogs();
   }, []);
+
+
+  const handleBodyChange = (content) => {
+    setUpdatedBody(content);
+  };
+  
 
   return (
     <div className="flex flex-col gap-0 font-sans">
       {blogs.map((blog) => (
         <div className="mx-4 my-4" key={blog.id}>
+
           {blog.id === editing ? (
             <div className="flex flex-col gap-2">
               <input
@@ -52,6 +108,8 @@ const Blogs = () => {
                 value={updatedTitle}
                 onChange={(e) => setUpdatedTitle(e.target.value)}
               />
+
+
               <input
                 type="color"
                 className="rounded-md cursor-pointer"
@@ -59,13 +117,13 @@ const Blogs = () => {
                 onChange={(e) => setUpdatedTitleColor(e.target.value)}
               />
 
-              <div style={{ backgroundColor: lightenColor(updatedTitleColor, 0.15) }}>
-                <Editor
-                  editorState={editorState}
-                  onChange={handleEditorStateChange}
-                  placeholder="Write your blog content here..."
-                />
-              </div>
+              <ReactQuill 
+              modules={modules}
+              className="py-4 px-2 min-h-56 rounded-b-md"
+              theme="snow" 
+              value={updatedBody}
+              style={{ backgroundColor: lightenColor(updatedTitleColor, 0.15) }}
+               onChange={handleBodyChange} />
 
               <div className="flex gap-2 items-center">
                 <button
@@ -74,6 +132,8 @@ const Blogs = () => {
                 >
                   Update
                 </button>
+
+
                 <button
                   className="px-3 py-1 bg-red-500 text-white font-medium rounded-md"
                   onClick={cancelEditing}
@@ -96,7 +156,6 @@ const Blogs = () => {
                   dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.body) }}
                 />
               </div>
-
               <button
                 className="px-3 mt-2 rounded-md text-blue-600"
                 onClick={() => startEditing(blog)}
@@ -117,4 +176,6 @@ const Blogs = () => {
   );
 };
 
+
 export default Blogs;
+
