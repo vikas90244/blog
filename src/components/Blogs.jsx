@@ -51,8 +51,14 @@ const Blogs = () => {
         title_color: updatedTitleColor,
       });
       if (response.status === 200) {
+        setBlogs((prevBlogs) =>
+          prevBlogs.map((blog) =>
+            blog.id === id
+              ? { ...blog, title: updatedTitle, body: updatedBody, title_color: updatedTitleColor }
+              : blog
+          )
+        );
         setEditing(null);
-        fetchBlogs();
       }
     } catch (error) {
       console.error("Error updating the blog: ", error);
