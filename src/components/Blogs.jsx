@@ -6,30 +6,34 @@ import { lightenColor } from '../utility/color';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { modules } from '../utility/color';
+import axios from 'axios';
+
 const Blogs = () => {
   const URL = "https://blogify-zv8t.onrender.com/blog";
+
+
   const [blogs, setBlogs] = useState([]);
   const [editing, setEditing] = useState(null);
   const [updatedTitle, setUpdatedTitle] = useState('');
   const [updatedBody, setUpdatedBody] = useState('');
   const [updatedTitleColor, setUpdatedTitleColor] = useState('#ffffff');
 
+
+
   const fetchBlogs = async () => {
     try {
-      const response = await fetch(URL);
-      const data = await response.json();
-      setBlogs(data);
+      const response =await axios.get(URL);
+      setBlogs(response.data);
     } catch (error) {
       console.error("Error fetching blogs: ", error);
     }
   };
 
+
   const deleteBlog = async (id) => {
     try {
-      const response = await fetch(`${URL}/${id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
+      const response = await axios.delete(`${URL}/${id}`);
+      if (response.status === 200) {
         setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== id));
       }
     } catch (error) {
@@ -39,38 +43,24 @@ const Blogs = () => {
 
 
 
-
   const updateBlog = async (id) => {
     try {
-      const response = await fetch(`${URL}/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: updatedTitle,
-          body: updatedBody,
-          title_color: updatedTitleColor,
-        }),
+      const response = await axios.put(`${URL}/${id}`, {
+        title: updatedTitle,
+        body: updatedBody,
+        title_color: updatedTitleColor,
       });
-
-      if (response.ok) {
-        setBlogs((prevBlogs) =>
-          prevBlogs.map((blog) =>
-            blog.id === id
-              ? { ...blog, title: updatedTitle, body: updatedBody, title_color: updatedTitleColor }
-              : blog
-          )
-        );
+      if (response.status === 200) {
         setEditing(null);
-      } else {
-        console.error("Failed to update blog.");
+        fetchBlogs();
       }
     } catch (error) {
-      console.error("Error updating blog: ", error);
+      console.error("Error updating the blog: ", error);
     }
   };
 
+
+  
   const startEditing = (blog) => {
     setEditing(blog.id);
     setUpdatedTitle(blog.title);
@@ -88,11 +78,9 @@ const Blogs = () => {
     fetchBlogs();
   }, []);
 
-
   const handleBodyChange = (content) => {
     setUpdatedBody(content);
   };
-  
 
   return (
     <div className="flex flex-col gap-0 font-sans">
@@ -177,6 +165,4 @@ const Blogs = () => {
   );
 };
 
-
 export default Blogs;
-
